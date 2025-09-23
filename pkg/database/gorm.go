@@ -6,6 +6,7 @@ import (
 
 	// "github.com/carlescere/scheduler"
 	"github.com/sirupsen/logrus"
+	"github.com/tomatosAt/reskill-go-react/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -67,33 +68,19 @@ func (c *Client) ConnectWithGormConfig(gormCfg gorm.Config) error {
 	if c.config.DebugMode {
 		c.ctx = c.ctx.Debug()
 	}
-	// if c.config.Migration {
-	// 	if err := c.ctx.AutoMigrate(
-	// 		model.JobDetails{},
-	// 		model.JobScoring{},
-	// 		model.JobScoreAggregates{},
-	// 		model.Users{},
-	// 		model.Ranking{},
-	// 		model.Level{},
-	// 		model.Time{},
-	// 		model.Leader{},
-	// 		model.Services{},
-	// 		model.ServiceGroups{},
-	// 		model.UsersRole{},
-	// 		model.HistoryResolved{},
-	// 		model.SoDetail{},
-	// 		model.VmiRanking{},
-	// 		model.JobEquation{},
-	// 		model.UserHistory{},
-	// 		model.SalesFactorRanking{},
-	// 		model.Role{},
-	// 		model.ServiceScoring{},
-	// 		model.ScoringType{},
-	// 		model.SmtGroupOrgChartID{},
-	// 	); err != nil {
-	// 		return err
-	// 	}
-	// }
+	if c.config.Migration {
+		if err := c.ctx.AutoMigrate(
+			model.Game{},
+			model.User{},
+			model.Cart{},
+			model.Purchase{},
+			model.Transaction{},
+			model.TransactionAPILog{},
+			model.PreRegister{},
+		); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

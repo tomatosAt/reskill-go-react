@@ -25,5 +25,5 @@ func Create(app *app.Context) error {
 func addRouter(r fiber.Router, h *handler.Handler) {
 	v1 := r.Group("/v1")
 	v1.Get("/health", h.HealthCheck)
-	v1.Post("/convert", h.ConvertMP4ToHLS)
+	// v1.Post("/user", h.)
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/tomatosAt/reskill-go-react/pkg/database"
 	"github.com/tomatosAt/reskill-go-react/pkg/requests"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -59,5 +60,22 @@ func (r Repository) Trace(ctx context.Context, spanName string, attributes ...tr
 // }
 
 func New(app *app.Context) (*Repository, error) {
-	return &Repository{}, nil
+	l := app.NewLogger().WithField("module", moduleName)
+	dbMain, err := app.NewDBMainClient(l)
+	if err != nil {
+		return nil, err
+	}
+	c, err := app.NewCacheClient(l)
+	if err != nil {
+		return nil, err
+	}
+	httpClient := requests.NewHttpClient(app.AddSyslogHook(l, moduleName))
+	return &Repository{
+		app:    app,
+		http:   httpClient,
+		log:    l,
+		tracer: otel.Tracer(moduleName),
+		dbMain: dbMain,
+		cache:  c,
+	}, nil
 }
