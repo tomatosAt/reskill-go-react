@@ -1,0 +1,89 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Dev env
+/env
+/devenv
+/dev
+**/.env
+/data
+**/testcode
+blackbox.yml
+/cmd/*test
+
+# test docker
+docker-compose.yml
+deployment.yml
+***/test_*
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+**/dist
+**/build
+/out
+
+# dependencies
+/node_modules
+**/node_modules
+/vendors
+/storage
+
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# config
+**/environments/config.ts
+**/environments/definedvar.ts
+**/environments/provinces.ts
+**/config.yaml
+**/config.yml
+**/rules.yml
+
+# Deploy example
+!/deploy/docker-compose.yml
+/deploy/db
