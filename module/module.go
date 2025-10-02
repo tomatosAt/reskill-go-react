@@ -5,7 +5,8 @@ import (
 
 	"github.com/tomatosAt/reskill-go-react/app"
 	"github.com/tomatosAt/reskill-go-react/middleware"
-	"github.com/tomatosAt/reskill-go-react/module/openapi"
+	frontend "github.com/tomatosAt/reskill-go-react/module/front-end"
+	openapi "github.com/tomatosAt/reskill-go-react/module/open-api"
 )
 
 func Create(app *app.Context) error {
@@ -23,6 +24,11 @@ func Create(app *app.Context) error {
 	// app.Router.Use(c)
 	if err := openapi.Create(app); err != nil {
 		l.Errorln("[x] Create OpenAPI module error -:", err)
+		return err
+	}
+	// frontend web
+	if err := frontend.Create(app); err != nil {
+		l.Errorln("[x] Create FrontEndAPI module error -:", err)
 		return err
 	}
 	return nil

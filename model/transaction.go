@@ -2,8 +2,8 @@ package model
 
 type Transaction struct {
 	Model
-	UserID        uint    `json:"user_id"`
-	TotalAmount   float64 `json:"total_amount"`
-	Status        string  `json:"status"` // pending, success, failed
-	PaymentMethod string  `json:"payment_method"`
+	UserID        string  `gorm:"column:user_id;size:255;"`
+	TotalAmount   float64 `gorm:"column:total_amount;size:255;"`
+	Status        string  `gorm:"column:status;size:255;"` // pending, success, failed
+	PaymentMethod string  `gorm:"column:payment_method;size:255;"`
 }

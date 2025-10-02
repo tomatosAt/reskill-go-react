@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/tomatosAt/reskill-go-react/module/openapi/ports"
-	"github.com/tomatosAt/reskill-go-react/module/openapi/services"
+	"github.com/tomatosAt/reskill-go-react/module/front-end/ports"
+	"github.com/tomatosAt/reskill-go-react/module/front-end/services"
 )
 
 /**

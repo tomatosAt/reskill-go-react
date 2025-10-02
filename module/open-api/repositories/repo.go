@@ -14,7 +14,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-const moduleName = "openapi"
+const moduleName = "open-api"
 
 type Repository struct {
 	app     *app.Context
@@ -23,8 +23,8 @@ type Repository struct {
 	tracer  trace.Tracer
 	dbMain  *database.Client
 	dbMongo *mongo.Database
-	dbLog   *database.Client
-	cache   *cache.Redis
+	// dbLog   *database.Client
+	cache *cache.Redis
 }
 
 func (r Repository) Module() string {

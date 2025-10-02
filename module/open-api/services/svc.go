@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/tomatosAt/reskill-go-react/module/openapi/ports"
-	"github.com/tomatosAt/reskill-go-react/module/openapi/repositories"
+	"github.com/tomatosAt/reskill-go-react/module/open-api/ports"
+	"github.com/tomatosAt/reskill-go-react/module/open-api/repositories"
 )
 
 /**

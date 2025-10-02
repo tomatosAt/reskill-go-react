@@ -3,9 +3,9 @@ package openapi
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tomatosAt/reskill-go-react/app"
-	"github.com/tomatosAt/reskill-go-react/module/openapi/handler"
-	"github.com/tomatosAt/reskill-go-react/module/openapi/repositories"
-	"github.com/tomatosAt/reskill-go-react/module/openapi/services"
+	"github.com/tomatosAt/reskill-go-react/module/open-api/handler"
+	"github.com/tomatosAt/reskill-go-react/module/open-api/repositories"
+	"github.com/tomatosAt/reskill-go-react/module/open-api/services"
 )
 
 func Create(app *app.Context) error {

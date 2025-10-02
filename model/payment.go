@@ -4,8 +4,8 @@ import "time"
 
 type Purchase struct {
 	Model
-	UserID        uint      `json:"user_id"`
-	GameID        uint      `json:"game_id"`
-	TransactionID *uint     `json:"transaction_id"` // optional
-	PurchasedAt   time.Time `json:"purchased_at"`
+	UserID        string    `gorm:"column:user_id;size:255;"`
+	GameID        string    `gorm:"column:game_id;size:255;"`
+	TransactionID *string   `gorm:"column:transaction_id;size:255;"`
+	PurchasedAt   time.Time `gorm:"column:purchased_at;size:255;"`
 }

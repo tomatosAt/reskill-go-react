@@ -77,6 +77,7 @@ func (c *Client) ConnectWithGormConfig(gormCfg gorm.Config) error {
 			model.Transaction{},
 			model.TransactionAPILog{},
 			model.PreRegister{},
+			model.TransactionAuth{},
 		); err != nil {
 			return err
 		}
