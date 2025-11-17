@@ -4,12 +4,14 @@ go 1.23.5
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
+	github.com/andreburgaud/crypt2go v1.8.0
 	github.com/bytedance/sonic v1.14.1
 	github.com/go-redis/redis/v7 v7.4.1
 	github.com/gofiber/contrib/otelfiber/v2 v2.2.3
 	github.com/gofiber/fiber/v2 v2.52.9
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
+	github.com/satori/go.uuid v1.2.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.21.0

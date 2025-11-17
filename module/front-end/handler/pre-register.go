@@ -15,10 +15,14 @@ func (h *Handler) PreRegisterHandler(ctx *fiber.Ctx) error {
 	}
 	// TODO : check format
 	// CheckFormatPreRegisterSVC
-	if err := h.svc.CheckFormatPreRegisterSVC(&payload); err != nil {
+	if err := h.svc.CheckFormatPreRegisterSVC(ctx.UserContext(), &payload); err != nil {
 		return util.HttpError(ctx, http.StatusBadRequest, err.Error())
 	}
 	// TODO : Process เก็บข้อมูล
 	// Encrpy ชื่อ นามสกุล password
-	return nil
+	res, status, err := h.svc.PreRegisterSVC(ctx.UserContext(), payload)
+	if err != nil {
+		return util.HttpError(ctx, http.StatusInternalServerError, err.Error())
+	}
+	return util.HttpSuccess(ctx, status, res)
 }

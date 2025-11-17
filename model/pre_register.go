@@ -14,4 +14,5 @@ type PreRegister struct {
 	NickName       string `gorm:"column:nick_name;size:50;"`
 	Password       string `gorm:"column:password;size:255;"`
 	RegisterStatus string `gorm:"column:register_status;size:255;"`
+	UserID         string `gorm:"column:user_id;size:255;index;"`
 }
