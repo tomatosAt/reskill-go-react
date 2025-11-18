@@ -2,6 +2,10 @@ package config
 
 import (
 	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
@@ -50,6 +54,22 @@ func LoadConfig(file string, version string) *Config {
 	if err != nil {
 		logrus.Fatalln("load config file error:", err.Error())
 	}
+	privateKeyPath := viper.GetString("secret.private.key")
+	keyBytes, err := os.ReadFile(privateKeyPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	block, _ := pem.Decode(keyBytes)
+	if block == nil {
+		log.Fatal("failed to decode PEM block containing private key")
+	}
+
+	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Set default configuration
 	viper.SetDefault("app.name", "MyOwn")
 	viper.SetDefault("app.version", version)
@@ -116,7 +136,8 @@ func LoadConfig(file string, version string) *Config {
 		},
 		Secret: secretCfg{
 			EncryptKey:     viper.GetString("secret.encrypt.key"),
-			PrivateKeyFile: viper.GetString("secret.private.key"),
+			PrivateKeyFile: privateKeyPath,
+			PrivateKey:     privateKey,
 		},
 		Server: serverCfg{
 			ListenIp:       viper.GetString("server.listen"),

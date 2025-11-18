@@ -3,6 +3,7 @@ package util
 import (
 	"crypto/rsa"
 	"errors"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -49,4 +50,23 @@ func DecodeJWTAccessToken(tokenString string, claims jwt.Claims, signKey *rsa.Pr
 		return token.Claims, nil
 	}
 	return nil, errors.New("decode token error")
+}
+
+func GenerateNewAccessTokenRepo(userID string, signKey *rsa.PrivateKey) (string, string, error) {
+	sid := GenUniqueIdV7()
+	issAt := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), 0, 0, time.Now().Location())
+	expiresAt := issAt.Add(24 * time.Hour)
+	claims := JWTStandardClaims{
+		StandardClaims: &jwt.StandardClaims{
+			Audience:  userID,
+			IssuedAt:  issAt.Unix(),
+			Subject:   sid.String(),
+			ExpiresAt: expiresAt.Unix(),
+		},
+	}
+	token, err := EncodeJWTAccessToken(claims, signKey)
+	if err != nil {
+		return "", "", err
+	}
+	return token, sid.String(), nil
 }

@@ -1,6 +1,8 @@
 package config
 
-import "time"
+import (
+	"time"
+)
 
 // Default configuration
 
@@ -38,11 +40,6 @@ const (
 	StoreSMSProviderIndex    = "config:sms:provider"
 	CachingAccessTokenOne    = "cache:one_id:access_token:%s"
 	CachingAccountDetailsOne = "cache:one_id:account_details:%s"
-	// CachingRaOrgChartDetails            = "cache:ra:orgchart_details:%s"
-	// CachingRaAccountDetails             = "cache:ra:account_details:%s"
-	// CachingRaAccountDetailsByEmployeeID = "cache:ra:account_details_by_employee_id:%s"
-	// CachingAccessTokenRbac              = "cache:rbac:access_token:%s"
-	// CachingRbacDetails                  = "cache:rbac:details:%s"
 	// CachingProfile    = "cache:profile:%s"
 	// CachingPermission = "cache:permissson:%s"
 )
