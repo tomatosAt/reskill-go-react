@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/tomatosAt/reskill-go-react/model"
 	"github.com/tomatosAt/reskill-go-react/module/front-end/dto"
+	"github.com/tomatosAt/reskill-go-react/pkg/util"
 )
 
 func InsertPreRegisterMapper(payload dto.PreRegisterDataBasePayload, password string, data ...string) model.PreRegister {
@@ -63,5 +64,33 @@ func ConvernToByteMapper(v any) ([]byte, error) {
 func ResponsePreRegisterMapper(code string) dto.ResponsePreRegister {
 	return dto.ResponsePreRegister{
 		Code: code,
+	}
+}
+
+func DecodePreRegisterConvernMapper(key string, data model.PreRegister) (model.PreRegister, error) {
+	decryptedData, _ := util.DecryptList(key, data.FirstNameTh, data.LastNameTh, data.FirstNameEng, data.LastNameEng, data.TitleTh, data.TitleEng)
+	return model.PreRegister{
+		FirstNameTh:  decryptedData[0],
+		LastNameTh:   decryptedData[1],
+		FirstNameEng: decryptedData[2],
+		LastNameEng:  decryptedData[3],
+		TitleTh:      decryptedData[4],
+		TitleEng:     decryptedData[5],
+	}, nil
+}
+
+func ResponseProfileMapper(id, userID, tel, email, nickname string, datadecryp model.PreRegister) dto.ResponseUserProfiles {
+	return dto.ResponseUserProfiles{
+		Id:           id,
+		UserID:       userID,
+		FirstNameTh:  datadecryp.FirstNameTh,
+		LastNameTh:   datadecryp.LastNameTh,
+		TitleTh:      datadecryp.TitleTh,
+		FirstNameEng: datadecryp.FirstNameEng,
+		LastNameEng:  datadecryp.LastNameEng,
+		TitleEng:     datadecryp.TitleEng,
+		MobileNo:     tel,
+		Email:        email,
+		NickName:     nickname,
 	}
 }

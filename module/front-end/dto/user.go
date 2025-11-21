@@ -11,6 +11,5 @@ type ResponseUserProfiles struct {
 	Email        string `json:"email"`
 	TitleTh      string `json:"title_th"`
 	TitleEng     string `json:"title_eng"`
-	Tel          string `json:"tel"`
 	NickName     string `json:"nick_name"`
 }

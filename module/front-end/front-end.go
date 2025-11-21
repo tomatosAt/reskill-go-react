@@ -5,8 +5,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/tomatosAt/reskill-go-react/app"
-	"github.com/tomatosAt/reskill-go-react/middleware"
+	middleware "github.com/tomatosAt/reskill-go-react/middleware"
 	"github.com/tomatosAt/reskill-go-react/module/front-end/handler"
+	fwMiddleware "github.com/tomatosAt/reskill-go-react/module/front-end/middleware"
 	"github.com/tomatosAt/reskill-go-react/module/front-end/repositories"
 	"github.com/tomatosAt/reskill-go-react/module/front-end/services"
 )
@@ -24,13 +25,14 @@ func Create(app *app.Context) error {
 	g := app.Router.Group(prefixPath)
 	skipper := middleware.NewSkipperPath("")
 	skipper.Add(prefixPath+"/v1/pre-register", http.MethodPost)
-
-	addRouter(g, h)
+	skipper.Add(prefixPath+"/v1/session", http.MethodPost)
+	fwMid := fwMiddleware.NewFWAuthMiddleware(&skipper, repo.DB(), repo.Cache(), repo.AppCfg().Secret.PrivateKey, repo.Cache())
+	addRouter(g, h, fwMid)
 	return nil
 }
 
-func addRouter(r fiber.Router, h *handler.Handler) {
-	v1 := r.Group("/v1")
+func addRouter(r fiber.Router, h *handler.Handler, fwMid *fwMiddleware.FrontWebMiddleware) {
+	v1 := r.Group("/v1").Use(fwMid.NewAuth())
 	preRegist := v1.Group("pre-register")
 	preRegist.Post("", h.PreRegisterHandler)
 	// 	1) POST /pre-register
@@ -40,4 +42,6 @@ func addRouter(r fiber.Router, h *handler.Handler) {
 	// คืน response → "message": "Pre-register successful, check email for OTP"
 	session := v1.Group("session")
 	session.Post("", h.CreateSessionHandler)
+	session.Get("", h.GetProfilesHandler)
+	// session.Get("/profiles", h.GetProfilesHandler)
 }
