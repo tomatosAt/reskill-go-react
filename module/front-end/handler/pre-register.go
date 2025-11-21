@@ -13,13 +13,13 @@ func (h *Handler) PreRegisterHandler(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&payload); err != nil {
 		return util.HttpError(ctx, http.StatusBadRequest, err.Error())
 	}
-	// TODO : check format
+	//  : check format
 	// CheckFormatPreRegisterSVC
 	if err := h.svc.CheckFormatPreRegisterSVC(ctx.UserContext(), &payload); err != nil {
 		return util.HttpError(ctx, http.StatusBadRequest, err.Error())
 	}
-	// TODO : Process เก็บข้อมูล
-	// Encrpy ชื่อ นามสกุล password
+	//  : Process เก็บข้อมูล
+	//  : Encrpy ชื่อ นามสกุล password
 	res, status, err := h.svc.PreRegisterSVC(ctx.UserContext(), payload)
 	if err != nil {
 		return util.HttpError(ctx, http.StatusInternalServerError, err.Error())

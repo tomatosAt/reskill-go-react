@@ -34,13 +34,10 @@ func addRouter(r fiber.Router, h *handler.Handler) {
 	preRegist := v1.Group("pre-register")
 	preRegist.Post("", h.PreRegisterHandler)
 	// 	1) POST /pre-register
-
 	// รับข้อมูลสมัคร (first_name, last_name, email, phone)
-
 	// insert ลง DB → status = pending
-
 	// generate OTP → save DB/Redis + ส่ง email
-
 	// คืน response → "message": "Pre-register successful, check email for OTP"
-	
+	session := v1.Group("session")
+	session.Post("", h.CreateSessionHandler)
 }

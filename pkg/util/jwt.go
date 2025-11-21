@@ -52,15 +52,14 @@ func DecodeJWTAccessToken(tokenString string, claims jwt.Claims, signKey *rsa.Pr
 	return nil, errors.New("decode token error")
 }
 
-func GenerateNewAccessTokenRepo(userID string, signKey *rsa.PrivateKey) (string, string, error) {
-	sid := GenUniqueIdV7()
+func GenerateNewAccessTokenRepo(sessionID, preRegisterUserID string, signKey *rsa.PrivateKey) (string, string, error) {
 	issAt := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), 0, 0, time.Now().Location())
 	expiresAt := issAt.Add(24 * time.Hour)
 	claims := JWTStandardClaims{
 		StandardClaims: &jwt.StandardClaims{
-			Audience:  userID,
+			Audience:  preRegisterUserID,
 			IssuedAt:  issAt.Unix(),
-			Subject:   sid.String(),
+			Subject:   sessionID,
 			ExpiresAt: expiresAt.Unix(),
 		},
 	}
@@ -68,5 +67,5 @@ func GenerateNewAccessTokenRepo(userID string, signKey *rsa.PrivateKey) (string,
 	if err != nil {
 		return "", "", err
 	}
-	return token, sid.String(), nil
+	return token, sessionID, nil
 }

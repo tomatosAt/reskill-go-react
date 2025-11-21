@@ -34,12 +34,12 @@ const (
 	CachingMediumDuration       = time.Hour * 4
 	CachingLongDuration         = time.Hour * 8
 	CachingTokenExpire          = time.Hour * 24
-
-	StoreBlockingState       = "block:ip:%s" // ip
-	StoreBlockingPattern     = "block:ip:*"
-	StoreSMSProviderIndex    = "config:sms:provider"
-	CachingAccessTokenOne    = "cache:one_id:access_token:%s"
-	CachingAccountDetailsOne = "cache:one_id:account_details:%s"
+	SessionTimeOut              = time.Hour
+	StoreBlockingState          = "block:ip:%s" // ip
+	StoreBlockingPattern        = "block:ip:*"
+	StoreSMSProviderIndex       = "config:sms:provider"
+	CachingAccessTokenOne       = "cache:one_id:access_token:%s"
+	CachingAccountDetailsOne    = "cache:one_id:account_details:%s"
 	// CachingProfile    = "cache:profile:%s"
 	// CachingPermission = "cache:permissson:%s"
 )

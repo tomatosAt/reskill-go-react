@@ -25,7 +25,11 @@ type Repository interface {
 	InsertPreRegisterRepo(ctx context.Context, tx *gorm.DB, data model.PreRegister) (*model.PreRegister, error)
 	InsertTransactionAuthRepo(ctx context.Context, tx *gorm.DB, transactionAuth model.TransactionAuth) (*model.TransactionAuth, error)
 	GetPreRegisterByPreRegisterUidRepo(ctx context.Context, tx *gorm.DB, preRegistUid, transactionAuthUid string) (*model.TransactionAuth, error)
-	SetAuthSession(uid, accountId string, s dto.AuthSession) error
+	SetAuthSession(uid, uidPreRegister string, s dto.AuthSession) error
+	// user
+	GetAuthCtxRepo(ctx context.Context) (*dto.AuthSession, error)
+	// session
+	GetAuthSession(uid, accountId string) (*dto.AuthSession, error)
 }
 
 type Service interface {
@@ -36,5 +40,6 @@ type Service interface {
 	PreRegisterSVC(ctx context.Context, data dto.PreRegisterDataBasePayload) (*dto.ResponsePreRegister, int, error)
 	// session
 	DecryptStringToStructService(ctx context.Context, code string) (dto.PreRegisterConvern, error)
-	CreateSessionService(ctx context.Context, code string) (int, error)
+	CreateSessionService(ctx context.Context, code string) (dto.Session, error)
+	GetProfilesService(ctx context.Context) (dto.ResponseUserProfiles, int, error)
 }
