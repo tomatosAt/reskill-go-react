@@ -26,6 +26,7 @@ func Create(app *app.Context) error {
 	skipper := middleware.NewSkipperPath("")
 	skipper.Add(prefixPath+"/v1/pre-register", http.MethodPost)
 	skipper.Add(prefixPath+"/v1/session", http.MethodPost)
+	skipper.Add(prefixPath+"/v1/auth/login", http.MethodPost)
 	fwMid := fwMiddleware.NewFWAuthMiddleware(&skipper, repo.DB(), repo.Cache(), repo.AppCfg().Secret.PrivateKey, repo.Cache())
 	addRouter(g, h, fwMid)
 	return nil
@@ -40,8 +41,12 @@ func addRouter(r fiber.Router, h *handler.Handler, fwMid *fwMiddleware.FrontWebM
 	// insert ลง DB → status = pending
 	// generate OTP → save DB/Redis + ส่ง email
 	// คืน response → "message": "Pre-register successful, check email for OTP"
+	// 	2) POST /session
 	session := v1.Group("session")
 	session.Post("", h.CreateSessionHandler)
 	session.Get("", h.GetProfilesHandler)
 	// session.Get("/profiles", h.GetProfilesHandler)
+	// 	3) POST /login
+	auth := v1.Group("auth")
+	auth.Post("/login", h.LoginUserPassHandler)
 }

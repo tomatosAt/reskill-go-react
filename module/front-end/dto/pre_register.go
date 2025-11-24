@@ -13,7 +13,7 @@ type PreRegisterDataBasePayload struct {
 	Tel         string `json:"tel" validate:"regexp=^[0-9]*$"`
 	Remark      string `json:"remark" validate:"omitempty,max=100,regexp=^[a-zA-Z .-]+$"`
 	Email       string `json:"email" validate:"omitempty,email"`
-	Username    string `json:"username" validate:"omitempty,max=50,regexp=^[a-zA-Z0-9_@ .-]+$"`
+	Username    string `json:"username" validate:"required,max=50,regexp=^[a-zA-Z0-9_@ .-]+$"`
 	NickName    string `json:"nick_name" validate:"omitempty,max=50,regexp=^.+$"`
 	Password    string `json:"password" validate:"required,min=8,max=50"`
 	UserLogin   string `json:"user_login"`

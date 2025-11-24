@@ -94,3 +94,15 @@ func ResponseProfileMapper(id, userID, tel, email, nickname string, datadecryp m
 		NickName:     nickname,
 	}
 }
+
+func InsertUsersAuthMapper(username, password, role string) model.User {
+	return model.User{
+		Username: username,
+		Password: password,
+		Role:     role,
+		Model: model.Model{
+			CreatedBy: "Admin",
+			UpdatedBy: "Admin",
+		},
+	}
+}

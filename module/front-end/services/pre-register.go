@@ -68,12 +68,17 @@ func (s *Service) PreRegisterSVC(ctx context.Context, data dto.PreRegisterDataBa
 	ctx, span := s.repo.Trace(ctx, "svc.PreRegisterSVC", oteltrace.WithAttributes())
 	defer span.End()
 	// Process เก็บข้อมูล
-	// เช็ค email ซ้ำ repo // เช็ค phone ซ้ำ repo
 	var result dto.ResponsePreRegister
+	// เช็คข้อมูล pre-register ว่า username ซ้ำมั้ย
+	repeatUsername := s.repo.RepeatByUsernameRepo(ctx, nil, data.Username)
+	if repeatUsername {
+		return &result, http.StatusBadRequest, errors.New("username already exists")
+	}
 	tx := s.repo.DB().Ctx().Begin()
 	preRegisterRepo, err := s.repo.GetPreRegisterByEmailTelNoRepo(ctx, tx, data.Email, data.Tel)
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
+			tx.Rollback()
 			return &result, http.StatusInternalServerError, err
 		}
 		//  Encrpy ชื่อ นามสกุล
@@ -82,6 +87,7 @@ func (s *Service) PreRegisterSVC(ctx context.Context, data dto.PreRegisterDataBa
 		mapperPreRegister := mapper.InsertPreRegisterMapper(data, hashPassword, encryptedData...)
 		preRegisterRepo, err = s.repo.InsertPreRegisterRepo(ctx, tx, mapperPreRegister)
 		if err != nil {
+			tx.Rollback()
 			util.RecordSpanError(span, err, "repo.InsertPreRegisterRepo")
 			return &result, http.StatusInternalServerError, errors.New("server error")
 		}
@@ -90,6 +96,7 @@ func (s *Service) PreRegisterSVC(ctx context.Context, data dto.PreRegisterDataBa
 	transactionAuthMapper := mapper.InsertTransactionAuthMapper("pre-register", "pending", "pre-register", preRegisterRepo.Id.String())
 	transactionAuthRepo, err := s.repo.InsertTransactionAuthRepo(ctx, tx, transactionAuthMapper)
 	if err != nil {
+		tx.Rollback()
 		util.RecordSpanError(span, err, "repo.InsertTransactionAuthRepo")
 		return &result, http.StatusInternalServerError, errors.New("server error")
 	}

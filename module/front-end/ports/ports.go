@@ -28,8 +28,14 @@ type Repository interface {
 	SetAuthSession(uid, uidPreRegister string, s dto.AuthSession) error
 	// user
 	GetAuthCtxRepo(ctx context.Context) (*dto.AuthSession, error)
+	RepeatByUsernameRepo(ctx context.Context, tx *gorm.DB, username string) bool
+	InsertUsersAuthRepo(ctx context.Context, tx *gorm.DB, userAuth model.User) (*model.User, error)
+	GetUsersAuthRepo(ctx context.Context, tx *gorm.DB, username, password string) (*model.User, error)
 	// session
 	GetAuthSession(uid, accountId string) (*dto.AuthSession, error)
+	// auth
+	GetPreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, username, password, email string) (*model.PreRegister, error)
+	UpdatePreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, preRegisterID string, dataUpdate map[string]interface{}) error
 }
 
 type Service interface {
@@ -42,4 +48,7 @@ type Service interface {
 	DecryptStringToStructService(ctx context.Context, code string) (dto.PreRegisterConvern, error)
 	CreateSessionService(ctx context.Context, code string) (dto.Session, error)
 	GetProfilesService(ctx context.Context) (dto.ResponseUserProfiles, int, error)
+	// auth
+	CheckFormatUsernameSVC(ctx context.Context, data *dto.UserPasswordPayload) error
+	LoginUserPassService(ctx context.Context, userPass dto.UserPasswordPayload) (*dto.ResponsePreRegister, int, error)
 }
