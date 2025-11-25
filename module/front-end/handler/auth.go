@@ -20,3 +20,11 @@ func (h *Handler) LoginUserPassHandler(ctx *fiber.Ctx) error {
 	}
 	return util.HttpSuccess(ctx, status, res)
 }
+
+func (h *Handler) LogoutHandler(ctx *fiber.Ctx) error {
+	status, err := h.svc.LogoutService(ctx.UserContext())
+	if err != nil {
+		return util.HttpError(ctx, status, err.Error())
+	}
+	return util.HttpSuccess(ctx, status, "logout successful")
+}

@@ -33,6 +33,7 @@ type Repository interface {
 	GetUsersAuthRepo(ctx context.Context, tx *gorm.DB, username, password string) (*model.User, error)
 	// session
 	GetAuthSession(uid, accountId string) (*dto.AuthSession, error)
+	ClearAuthSession(uid, accountId string) error
 	// auth
 	GetPreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, username, password, email string) (*model.PreRegister, error)
 	UpdatePreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, preRegisterID string, dataUpdate map[string]interface{}) error
@@ -51,4 +52,5 @@ type Service interface {
 	// auth
 	CheckFormatUsernameSVC(ctx context.Context, data *dto.UserPasswordPayload) error
 	LoginUserPassService(ctx context.Context, userPass dto.UserPasswordPayload) (*dto.ResponsePreRegister, int, error)
+	LogoutService(ctx context.Context) (int, error)
 }

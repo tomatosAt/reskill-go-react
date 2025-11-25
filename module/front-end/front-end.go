@@ -49,4 +49,5 @@ func addRouter(r fiber.Router, h *handler.Handler, fwMid *fwMiddleware.FrontWebM
 	// 	3) POST /login
 	auth := v1.Group("auth")
 	auth.Post("/login", h.LoginUserPassHandler)
+	auth.Post("/logout", h.LogoutHandler)
 }

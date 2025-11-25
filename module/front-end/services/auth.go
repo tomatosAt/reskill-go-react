@@ -111,3 +111,14 @@ func (s *Service) CheckFStatusUsernameSVC(ctx context.Context, data *dto.UserPas
 	// ถ้าหาเจอ แสดงว่า username,password,email ถูกต้อง เป็น user ที่ลงทะเบียนไว้ ให้ทำงานต่อ login
 	return status
 }
+
+func (s *Service) LogoutService(ctx context.Context) (int, error) {
+	ctx, span := s.repo.Trace(ctx, "svc.LogoutService", oteltrace.WithAttributes())
+	defer span.End()
+	cliams, _ := s.repo.GetAuthCtxRepo(ctx)
+	if err := s.repo.ClearAuthSession(cliams.Uid.String(), cliams.PreRegisterUid); err != nil {
+		logrus.Error("ClearAuthSession error ->", err)
+		return http.StatusInternalServerError, errors.New("system error")
+	}
+	return http.StatusOK, nil
+}
