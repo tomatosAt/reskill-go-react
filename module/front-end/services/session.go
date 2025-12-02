@@ -39,6 +39,14 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 	if claimPreRegData.ExpireAt.Before(time.Now()) {
 		return res, errors.New("link expire")
 	}
+	codeAction, err := s.repo.GetCode(code)
+	if err != nil {
+		logrus.Error("get code error ->", err)
+		return res, errors.New("system error")
+	}
+	if codeAction == "used" {
+		return res, errors.New("code already used")
+	}
 	// ตรวจสอบข้อมูลกับฐานข้อมูล
 	getPreRegister, err := s.repo.GetPreRegisterByPreRegisterUidRepo(ctx, nil, claimPreRegData.PreRegisterUUID, claimPreRegData.TransactionAuthUUID)
 	if err != nil {
@@ -70,6 +78,10 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 	if err := s.repo.SetRefreshToken(refreshToken, sid); err != nil {
 		logrus.Error("set session error ->", err)
 		return res, errors.New("system error")
+	}
+	// 10. Mark code เป็นใช้แล้ว (one-time)
+	if codeAction == "active" {
+		s.repo.SetCode(code, "used")
 	}
 	resSessionMapper := mapper.ResponseSessionMapper(mapSession.ExpiresAt, sid, token, refreshToken)
 	return resSessionMapper, nil

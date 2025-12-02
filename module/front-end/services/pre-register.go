@@ -109,5 +109,8 @@ func (s *Service) PreRegisterSVC(ctx context.Context, data dto.PreRegisterDataBa
 	}
 	encryptedConvertByte, _ := util.EncryptAes256Ecb(s.repo.AppCfg().Secret.EncryptKey, string(convertByte))
 	result = mapper.ResponsePreRegisterMapper(string(encryptedConvertByte))
+	if err := s.repo.SetCode(string(encryptedConvertByte), "active"); err != nil {
+		logrus.Errorln("PreRegisterSVC SetCode err->", err)
+	}
 	return &result, http.StatusOK, nil
 }

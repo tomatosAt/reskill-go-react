@@ -37,6 +37,9 @@ type Repository interface {
 	// auth
 	GetPreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, username, password, email string) (*model.PreRegister, error)
 	UpdatePreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, preRegisterID string, dataUpdate map[string]interface{}) error
+	// code
+	SetCode(code, action string) error
+	GetCode(code string) (string, error)
 }
 
 type Service interface {
