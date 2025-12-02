@@ -20,6 +20,9 @@ var (
 	sessionKey = func(uid string, accountId string) string {
 		return fmt.Sprintf("session:%s:%s", uid, accountId)
 	}
+	refreshTokenKey = func(refreshToken string) string {
+		return fmt.Sprintf("refresh_token:%s", refreshToken)
+	}
 )
 
 func (r *Repository) SetAuthSession(uid string, uidPreRegister string, s dto.AuthSession) error {
@@ -49,4 +52,8 @@ func (r *Repository) VerifyAuthSession(uid, accountId string, s *dto.AuthSession
 		r.cache.Client.Expire(sessionKey(uid, accountId), config.SessionTimeOut)
 	}
 	return nil
+}
+
+func (r *Repository) SetRefreshToken(refreshToken string, sessionId string) error {
+	return r.cache.Set(refreshTokenKey(refreshToken), sessionId, config.CachingLongDuration)
 }

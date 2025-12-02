@@ -18,7 +18,9 @@ type AuthSession struct {
 }
 
 type Session struct {
-	SessionID string `json:"sid"`
-	TokenType string `json:"token_type"`
-	Token     string `json:"token"`
+	SessionID    string `json:"sid"`
+	TokenType    string `json:"token_type"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresAt    string `json:"expires_at"`
 }

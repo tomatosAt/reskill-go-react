@@ -57,9 +57,20 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 		logrus.Error("set session error ->", err)
 		return res, errors.New("system error")
 	}
-	// : generate token
+	// : generate access token
 	privateKey := s.repo.AppCfg().Secret.PrivateKey
 	token, sid, _ := util.GenerateNewAccessTokenRepo(mapSession.Uid.String(), getPreRegister.PreRegisterUid, privateKey)
-	resSessionMapper := mapper.ResponseSessionMapper(sid, token)
+	// : เพิ่ม refresh token
+	refreshToken, err := util.GenerateRefreshToken()
+	if err != nil {
+		logrus.Error("generate refresh token error ->", err)
+		return res, errors.New("system error")
+	}
+	// : set refresh token
+	if err := s.repo.SetRefreshToken(refreshToken, sid); err != nil {
+		logrus.Error("set session error ->", err)
+		return res, errors.New("system error")
+	}
+	resSessionMapper := mapper.ResponseSessionMapper(mapSession.ExpiresAt, sid, token, refreshToken)
 	return resSessionMapper, nil
 }

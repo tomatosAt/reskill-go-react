@@ -1,7 +1,9 @@
 package util
 
 import (
+	"crypto/rand"
 	"crypto/rsa"
+	"encoding/base64"
 	"errors"
 	"time"
 
@@ -68,4 +70,13 @@ func GenerateNewAccessTokenRepo(sessionID, preRegisterUserID string, signKey *rs
 		return "", "", err
 	}
 	return token, sessionID, nil
+}
+
+func GenerateRefreshToken() (string, error) {
+	b := make([]byte, 32) // 32 bytes = 256 bits
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(b), nil
 }
