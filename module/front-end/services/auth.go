@@ -82,6 +82,11 @@ func (s *Service) LoginUserPassService(ctx context.Context, userPass dto.UserPas
 	}
 	encryptedConvertByte, _ := util.EncryptAes256Ecb(s.repo.AppCfg().Secret.EncryptKey, string(convertByte))
 	result = mapper.ResponsePreRegisterMapper(string(encryptedConvertByte))
+	//  งั้นตอนสร้าง code ต้องไป set redis เพิ่มอีกสินะ
+	if err := s.repo.SetCode(string(encryptedConvertByte), "active"); err != nil {
+		logrus.Errorln("PreRegisterSVC SetCode err->", err)
+		util.RecordSpanError(span, err, "s.repo.SetCode")
+	}
 	return &result, http.StatusOK, nil
 }
 

@@ -39,6 +39,15 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 	if claimPreRegData.ExpireAt.Before(time.Now()) {
 		return res, errors.New("link expire")
 	}
+	codeAction, err := s.repo.GetCode(code)
+	if err != nil {
+		logrus.Error("get code error ->", err)
+		return res, errors.New("system error")
+	}
+	if codeAction == "used" {
+		s.repo.ClearCode(code)
+		return res, errors.New("code already used")
+	}
 	// ตรวจสอบข้อมูลกับฐานข้อมูล
 	getPreRegister, err := s.repo.GetPreRegisterByPreRegisterUidRepo(ctx, nil, claimPreRegData.PreRegisterUUID, claimPreRegData.TransactionAuthUUID)
 	if err != nil {
@@ -48,18 +57,32 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 		}
 		return res, errors.New("pre register data not found")
 	}
-	logrus.Infoln("getPreRegister ->", getPreRegister)
 	// : สร้าง session
-	// : map struct to Create Session
+	// : map struct to Create Session value
 	mapSession := mapper.CreateSessionMapper(getPreRegister.PreRegister.UserID, getPreRegister.PreRegister.RegisterStatus, getPreRegister.PreRegister.Password, getPreRegister.PreRegister.Id.String(), getPreRegister.Id.String())
 	// : set session
 	if err := s.repo.SetAuthSession(mapSession.Uid.String(), getPreRegister.PreRegisterUid, mapSession); err != nil {
 		logrus.Error("set session error ->", err)
 		return res, errors.New("system error")
 	}
-	// : generate token
+	// : generate access token
 	privateKey := s.repo.AppCfg().Secret.PrivateKey
 	token, sid, _ := util.GenerateNewAccessTokenRepo(mapSession.Uid.String(), getPreRegister.PreRegisterUid, privateKey)
-	resSessionMapper := mapper.ResponseSessionMapper(sid, token)
+	// : เพิ่ม refresh token
+	refreshToken, err := util.GenerateRefreshToken()
+	if err != nil {
+		logrus.Error("generate refresh token error ->", err)
+		return res, errors.New("system error")
+	}
+	// : set refresh token
+	if err := s.repo.SetRefreshToken(refreshToken, sid); err != nil {
+		logrus.Error("set session error ->", err)
+		return res, errors.New("system error")
+	}
+	// 10. Mark code เป็นใช้แล้ว (one-time)
+	if codeAction == "active" {
+		s.repo.SetCode(code, "used")
+	}
+	resSessionMapper := mapper.ResponseSessionMapper(mapSession.ExpiresAt, sid, token, refreshToken)
 	return resSessionMapper, nil
 }

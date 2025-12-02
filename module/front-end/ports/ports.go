@@ -26,6 +26,7 @@ type Repository interface {
 	InsertTransactionAuthRepo(ctx context.Context, tx *gorm.DB, transactionAuth model.TransactionAuth) (*model.TransactionAuth, error)
 	GetPreRegisterByPreRegisterUidRepo(ctx context.Context, tx *gorm.DB, preRegistUid, transactionAuthUid string) (*model.TransactionAuth, error)
 	SetAuthSession(uid, uidPreRegister string, s dto.AuthSession) error
+	SetRefreshToken(refreshToken string, sessionId string) error
 	// user
 	GetAuthCtxRepo(ctx context.Context) (*dto.AuthSession, error)
 	RepeatByUsernameRepo(ctx context.Context, tx *gorm.DB, username string) bool
@@ -37,6 +38,10 @@ type Repository interface {
 	// auth
 	GetPreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, username, password, email string) (*model.PreRegister, error)
 	UpdatePreRegisterByUserPassEmailRepo(ctx context.Context, tx *gorm.DB, preRegisterID string, dataUpdate map[string]interface{}) error
+	// code
+	SetCode(code, action string) error
+	GetCode(code string) (string, error)
+	ClearCode(code string) error
 }
 
 type Service interface {

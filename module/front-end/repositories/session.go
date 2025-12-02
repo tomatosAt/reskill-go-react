@@ -20,6 +20,12 @@ var (
 	sessionKey = func(uid string, accountId string) string {
 		return fmt.Sprintf("session:%s:%s", uid, accountId)
 	}
+	refreshTokenKey = func(refreshToken string) string {
+		return fmt.Sprintf("refresh_token:%s", refreshToken)
+	}
+	codeKey = func(code string) string {
+		return fmt.Sprintf("code:%s", code)
+	}
 )
 
 func (r *Repository) SetAuthSession(uid string, uidPreRegister string, s dto.AuthSession) error {
@@ -49,4 +55,24 @@ func (r *Repository) VerifyAuthSession(uid, accountId string, s *dto.AuthSession
 		r.cache.Client.Expire(sessionKey(uid, accountId), config.SessionTimeOut)
 	}
 	return nil
+}
+
+func (r *Repository) SetRefreshToken(refreshToken string, sessionId string) error {
+	return r.cache.Set(refreshTokenKey(refreshToken), sessionId, config.CachingLongDuration)
+}
+
+func (r *Repository) SetCode(code, action string) error {
+	return r.cache.Set(codeKey(code), action, config.CachingShortDuration)
+}
+
+func (r *Repository) GetCode(code string) (string, error) {
+	var action string
+	if err := r.cache.Get(codeKey(code), &action); err != nil {
+		return action, err
+	}
+	return action, nil
+}
+
+func (r *Repository) ClearCode(code string) error {
+	return r.cache.Del(codeKey(code))
 }
