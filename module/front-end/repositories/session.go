@@ -72,3 +72,7 @@ func (r *Repository) GetCode(code string) (string, error) {
 	}
 	return action, nil
 }
+
+func (r *Repository) ClearCode(code string) error {
+	return r.cache.Del(codeKey(code))
+}

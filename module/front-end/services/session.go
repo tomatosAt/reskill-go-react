@@ -45,6 +45,7 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 		return res, errors.New("system error")
 	}
 	if codeAction == "used" {
+		s.repo.ClearCode(code)
 		return res, errors.New("code already used")
 	}
 	// ตรวจสอบข้อมูลกับฐานข้อมูล
@@ -56,9 +57,8 @@ func (s *Service) CreateSessionService(ctx context.Context, code string) (dto.Se
 		}
 		return res, errors.New("pre register data not found")
 	}
-	logrus.Infoln("getPreRegister ->", getPreRegister)
 	// : สร้าง session
-	// : map struct to Create Session
+	// : map struct to Create Session value
 	mapSession := mapper.CreateSessionMapper(getPreRegister.PreRegister.UserID, getPreRegister.PreRegister.RegisterStatus, getPreRegister.PreRegister.Password, getPreRegister.PreRegister.Id.String(), getPreRegister.Id.String())
 	// : set session
 	if err := s.repo.SetAuthSession(mapSession.Uid.String(), getPreRegister.PreRegisterUid, mapSession); err != nil {

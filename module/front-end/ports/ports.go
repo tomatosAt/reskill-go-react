@@ -40,6 +40,7 @@ type Repository interface {
 	// code
 	SetCode(code, action string) error
 	GetCode(code string) (string, error)
+	ClearCode(code string) error
 }
 
 type Service interface {
